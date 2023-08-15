@@ -63,7 +63,7 @@ func mod(a, b int) int {
 func printState(state []bool) {
 	for i := 0; i < len(state); i++ {
 		if state[i] {
-			fmt.Print("X")
+			fmt.Print("█")
 		} else {
 			fmt.Print(" ")
 		}
