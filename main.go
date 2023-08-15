@@ -3,12 +3,13 @@ package main
 import "fmt"
 
 const binRule = "01101110" // 110
+const N = 300
 
 func main() {
-	state := make([]bool, 150)
-	state[149] = true
-	for i := 0; i < 150; i++ {
-		printState(state)
+	state := make([]bool, N)
+	state[N-1] = true
+	for i := 0; i < N; i++ {
+		printStateCompact(state)
 		state = nextState(state)
 	}
 }
@@ -61,12 +62,64 @@ func mod(a, b int) int {
 }
 
 func printState(state []bool) {
-	for i := 0; i < len(state); i++ {
-		if state[i] {
+	for _, cell := range state {
+		if cell {
 			fmt.Print("█")
 		} else {
 			fmt.Print(" ")
 		}
 	}
 	fmt.Println()
+}
+
+var prevState []bool
+
+func printStateCompact(state []bool) {
+	if prevState == nil {
+		prevState = state
+		return
+	}
+
+	for i := 0; i < len(state); i += 2 {
+		tl := prevState[i]
+		tr := prevState[i+1]
+		bl := state[i]
+		br := state[i+1]
+		switch {
+		case tl && tr && bl && br:
+			fmt.Print("█")
+		case tl && tr && bl && !br:
+			fmt.Print("▛")
+		case tl && tr && !bl && br:
+			fmt.Print("▜")
+		case !tl && tr && bl && br:
+			fmt.Print("▟")
+		case tl && !tr && bl && br:
+			fmt.Print("▙")
+		case tl && tr && !bl && !br:
+			fmt.Print("▀")
+		case !tl && !tr && bl && br:
+			fmt.Print("▄")
+		case tl && !tr && bl && !br:
+			fmt.Print("▌")
+		case !tl && tr && !bl && br:
+			fmt.Print("▐")
+		case !tl && tr && bl && !br:
+			fmt.Print("▞")
+		case tl && !tr && !bl && br:
+			fmt.Print("▚")
+		case tl && !tr && !bl && !br:
+			fmt.Print("▘")
+		case !tl && tr && !bl && !br:
+			fmt.Print("▝")
+		case !tl && !tr && bl && !br:
+			fmt.Print("▖")
+		case !tl && !tr && !bl && br:
+			fmt.Print("▗")
+		case !bl && !br && !tl && !tr:
+			fmt.Print(" ")
+		}
+	}
+	fmt.Println()
+	prevState = nil
 }
